@@ -1,0 +1,51 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mkdir -p .github/hooks && { echo \"[$(date +'%Y-%m-%d %H:%M:%S')] EVENT: UserPromptSubmit\"; jq -r '.session_id // \"Session ID: unknown\"' 2>/dev/null; echo \"---\"; } >> .github/hooks/agent_log.txt",
+            "shell": "bash"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Read|Write|Edit|Glob|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mkdir -p .github/hooks && { echo \"[$(date +'%Y-%m-%d %H:%M:%S')] EVENT: PreToolUse\"; jq -r '\"TOOL: \" + (.tool_name // \"unknown\")' 2>/dev/null; jq -r '.tool_input | if . then \"INPUT:\" else empty end' 2>/dev/null; jq -r '.tool_input | to_entries[] | \"  \" + .key + \": \" + (.value | if type == \"string\" then (if length > 100 then .[0:100] + \"...\" else . end) else tojson end)' 2>/dev/null | head -15; echo \"STATUS: Started\"; echo \"---\"; } >> .github/hooks/agent_log.txt",
+            "shell": "bash"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Read|Write|Edit|Glob|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mkdir -p .github/hooks && { echo \"[$(date +'%Y-%m-%d %H:%M:%S')] EVENT: PostToolUse (Success)\"; jq -r '\"TOOL: \" + (.tool_name // \"unknown\")' 2>/dev/null; echo \"RESULT:\"; jq -r '.tool_response | if . then (if type == \"string\" then (if length > 150 then .[0:150] + \"...\" else . end) else . end) else \"No response\" end' 2>/dev/null; echo \"STATUS: Completed\"; echo \"---\"; } >> .github/hooks/agent_log.txt",
+            "shell": "bash"
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash|Read|Write|Edit|Glob|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mkdir -p .github/hooks && { echo \"[$(date +'%Y-%m-%d %H:%M:%S')] EVENT: PostToolUse (FAILED)\"; jq -r '\"TOOL: \" + (.tool_name // \"unknown\")' 2>/dev/null; echo \"ERROR:\"; jq -r '.tool_response // \"Unknown error\"' 2>/dev/null; echo \"STATUS: Failed\"; echo \"---\"; } >> .github/hooks/agent_log.txt",
+            "shell": "bash"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "command": "bash -c 'mkdir -p .github/hooks && echo \"[UserPromptSubmit] $(date)\" >> .github/hooks/agent_log.txt && echo $'\\''${CLAUDE_AGENT_USER_PROMPT:$(cat <<EOF\\nEOF\\n)}$'\\'' >> .github/hooks/agent_log.txt && echo \"---\" >> .github/hooks/agent_log.txt && echo {\\\\\"continue\\\\\":true}'"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "bash -c 'mkdir -p .github/hooks && echo \"[PreToolUse] $(date)\" >> .github/hooks/agent_log.txt && echo \"Tool: ${CLAUDE_AGENT_TOOL_NAME}\" >> .github/hooks/agent_log.txt && echo \"---\" >> .github/hooks/agent_log.txt && echo {\\\\\"continue\\\\\":true}'"
+      }
+    ]
+  }
+}
