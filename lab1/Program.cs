@@ -387,7 +387,7 @@ var korisnici = new List<Korisnik> { ana, marko, lana };
 planSnaga.Korisnici.Add(ana);
 planKardio.Korisnici.Add(marko);
 planCore.Korisnici.Add(lana);
-planKardio.Korisnici.Add(lana);
+
 
 // ==== 5. LINQ UPITI - 8 primjera za analizu podataka ====
 
