@@ -1,0 +1,196 @@
+@model TreningIndexViewModel
+
+@{
+    ViewData["Title"] = "Treninzi";
+
+    var vrstaNaziv = new Dictionary<int, string>
+    {
+        { 1, "Snaga" },
+        { 2, "Kardio" },
+        { 3, "HIIT" },
+        { 4, "Funkcionalni" },
+        { 5, "Mobility" }
+    };
+
+    var hasActiveFilters = Model.SelectedUserId.HasValue || Model.SelectedVrsta.HasValue || Model.SelectedPeriod is 7 or 30 or 90 || Model.SelectedSort != "date_desc";
+}
+
+<div class="training-page">
+    <header class="training-header">
+        <div>
+            <h1>Treninzi</h1>
+            <p class="training-count">
+                @if (Model.Treninzi.Count == 0)
+                {
+                    <span>Nema treninga za odabrane kriterije.</span>
+                }
+                else
+                {
+                    <span>Prikazano @Model.Treninzi.Count od ukupno @Model.TotalCount treninga.</span>
+                }
+            </p>
+        </div>
+        @if (hasActiveFilters)
+        {
+            <a asp-action="Index" class="training-reset-link">Resetiraj filtere</a>
+        }
+    </header>
+
+    <section class="training-summary-grid" aria-label="Sažetak treninga">
+        <article class="training-summary-card">
+            <span class="training-summary-label">Ukupno treninga</span>
+            <strong class="training-summary-value">@Model.Treninzi.Count</strong>
+            <span class="training-summary-meta">u trenutnom prikazu</span>
+        </article>
+        <article class="training-summary-card">
+            <span class="training-summary-label">Ukupno minuta</span>
+            <strong class="training-summary-value">@Model.TotalMinutes</strong>
+            <span class="training-summary-meta">@Math.Round(Model.TotalMinutes / 60.0, 1) sati rada</span>
+        </article>
+        <article class="training-summary-card">
+            <span class="training-summary-label">Prosjek trajanja</span>
+            <strong class="training-summary-value">@Model.AverageDuration min</strong>
+            <span class="training-summary-meta">po treningu</span>
+        </article>
+        <article class="training-summary-card">
+            <span class="training-summary-label">Prosječna ocjena</span>
+            <strong class="training-summary-value">@(Model.AverageRating?.ToString("0.0") ?? "-")</strong>
+            <span class="training-summary-meta">od 10</span>
+        </article>
+    </section>
+
+    <section class="training-filters" aria-label="Filteri treninga">
+        <form method="get" class="training-filter-form">
+            <div class="training-filter-field">
+                <label for="userId">Korisnik</label>
+                <select id="userId" name="userId">
+                    <option value="">Svi korisnici</option>
+                    @foreach (var user in Model.AvailableUsers)
+                    {
+                        <option value="@user.Id" selected="@(Model.SelectedUserId == user.Id)">@user.FullName (@user.TrainingCount)</option>
+                    }
+                </select>
+            </div>
+
+            <div class="training-filter-field">
+                <label for="vrsta">Vrsta treninga</label>
+                <select id="vrsta" name="vrsta">
+                    <option value="">Sve vrste</option>
+                    @foreach (var vrsta in Enum.GetValues<VrstaTreninga>())
+                    {
+                        <option value="@((int)vrsta)" selected="@(Model.SelectedVrsta == vrsta)">@vrstaNaziv[(int)vrsta]</option>
+                    }
+                </select>
+            </div>
+
+            <div class="training-filter-field">
+                <label for="period">Razdoblje</label>
+                <select id="period" name="period">
+                    <option value="0" selected="@(Model.SelectedPeriod == 0)">Sve</option>
+                    <option value="7" selected="@(Model.SelectedPeriod == 7)">Zadnjih 7 dana</option>
+                    <option value="30" selected="@(Model.SelectedPeriod == 30)">Zadnjih 30 dana</option>
+                    <option value="90" selected="@(Model.SelectedPeriod == 90)">Zadnjih 90 dana</option>
+                </select>
+            </div>
+
+            <div class="training-filter-field">
+                <label for="sort">Sortiranje</label>
+                <select id="sort" name="sort">
+                    <option value="date_desc" selected="@(Model.SelectedSort == "date_desc")">Najnoviji prvo</option>
+                    <option value="date_asc" selected="@(Model.SelectedSort == "date_asc")">Najstariji prvo</option>
+                    <option value="duration_desc" selected="@(Model.SelectedSort == "duration_desc")">Najduže trajanje</option>
+                    <option value="duration_asc" selected="@(Model.SelectedSort == "duration_asc")">Najkraće trajanje</option>
+                    <option value="rating_desc" selected="@(Model.SelectedSort == "rating_desc")">Najviša ocjena</option>
+                    <option value="rating_asc" selected="@(Model.SelectedSort == "rating_asc")">Najniža ocjena</option>
+                </select>
+            </div>
+
+            <button type="submit" class="training-apply-button">Primijeni</button>
+        </form>
+    </section>
+
+    @if (Model.Treninzi.Count > 0)
+    {
+        <div class="training-grid">
+            @foreach (var training in Model.Treninzi)
+            {
+                var vrstaTekst = vrstaNaziv[(int)training.Vrsta];
+                var vrstaClass = training.Vrsta switch
+                {
+                    VrstaTreninga.Snaga => "training-type-badge--snaga",
+                    VrstaTreninga.Kardio => "training-type-badge--kardio",
+                    VrstaTreninga.HIIT => "training-type-badge--hiit",
+                    VrstaTreninga.Funkcionalni => "training-type-badge--funkcionalni",
+                    _ => "training-type-badge--mobility"
+                };
+                var userName = training.Korisnik is null ? "Nepoznat korisnik" : $"{training.Korisnik.Ime} {training.Korisnik.Prezime}";
+
+                <article class="training-card">
+                    <div class="training-card-header">
+                        <span class="training-type-badge @vrstaClass">@vrstaTekst</span>
+                        <div class="training-card-datetime">
+                            <span>@training.DatumVrijeme.ToString("dd.MM.yyyy.")</span>
+                            <span>@training.DatumVrijeme.ToString("HH:mm")</span>
+                        </div>
+                    </div>
+
+                    <p class="training-user">@userName</p>
+
+                    <div class="training-meta">
+                        <div class="training-meta-item">
+                            <span class="training-meta-label">Trajanje</span>
+                            <strong class="training-meta-value">@training.TrajanjeMinuta min</strong>
+                        </div>
+                        <div class="training-meta-item">
+                            <span class="training-meta-label">Kalorije</span>
+                            <strong class="training-meta-value">@(training.PotroseneKalorije?.ToString() ?? "-")</strong>
+                        </div>
+                        <div class="training-meta-item">
+                            <span class="training-meta-label">Ocjena</span>
+                            <strong class="training-meta-value">@(training.Ocjena?.ToString() ?? "-")/10</strong>
+                        </div>
+                        <div class="training-meta-item">
+                            <span class="training-meta-label">Status bilješki</span>
+                            <strong class="training-meta-value">@(string.IsNullOrWhiteSpace(training.Biljeske) ? "Nema" : "Unesene")</strong>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(training.Biljeske))
+                    {
+                        <div class="training-note">
+                            @((training.Biljeske.Length > 120) ? training.Biljeske.Substring(0, 120) + "..." : training.Biljeske)
+                        </div>
+                    }
+
+                    <div class="training-footer">
+                        <a asp-action="Details" asp-route-id="@training.Id" class="training-button" aria-label="Prikaži detalje treninga @training.Id">
+                            Detalji
+                            <i class="fas fa-arrow-right training-button-icon" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">🏋️</div>
+            <h2>Nema treninga</h2>
+            <p>
+                @if (hasActiveFilters)
+                {
+                    <span>Nijedan trening ne odgovara odabranim filterima. Promijeni kriterije ili resetiraj filtere.</span>
+                }
+                else
+                {
+                    <span>Treninzi još nisu uneseni u sustav.</span>
+                }
+            </p>
+            @if (hasActiveFilters)
+            {
+                <a asp-action="Index" class="training-reset-link">Prikaži sve treninge</a>
+            }
+        </div>
+    }
+</div>

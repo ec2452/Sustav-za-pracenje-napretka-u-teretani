@@ -1,0 +1,274 @@
+@model List<Korisnik>
+
+@{
+    ViewData["Title"] = "Korisnici";
+}
+
+<style>
+    .user-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 40px;
+    }
+
+    .user-header h1 {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--color-text-primary);
+        margin: 0 0 8px 0;
+    }
+
+    .user-count {
+        font-size: 14px;
+        color: var(--color-text-secondary);
+        margin: 0;
+    }
+
+    .user-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 16px;
+        margin-bottom: 48px;
+    }
+
+    .user-card {
+        background: var(--color-surface-800);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 12px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        transition: all 0.2s;
+    }
+
+    .user-card:hover {
+        border-color: var(--color-primary-500);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+    }
+
+    .user-name {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        margin: 0;
+    }
+
+    .user-email {
+        font-size: 13px;
+        color: var(--color-text-tertiary);
+        margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .user-meta {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--color-border-subtle);
+    }
+
+    .user-meta-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .user-meta-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--color-text-tertiary);
+    }
+
+    .user-meta-value {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--color-text-primary);
+    }
+
+    .user-plan {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px;
+        background: rgba(16, 185, 129, 0.08);
+        border-radius: 8px;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        font-size: 13px;
+        color: var(--color-text-secondary);
+    }
+
+    .user-plan i {
+        color: var(--color-primary-600);
+        font-size: 14px;
+    }
+
+    .user-plan-name {
+        font-weight: 600;
+        color: var(--color-text-primary);
+    }
+
+    .user-footer {
+        display: flex;
+        gap: 8px;
+        padding-top: 8px;
+        border-top: 1px solid var(--color-border-subtle);
+    }
+
+    .user-button {
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 16px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid var(--color-primary-600);
+        border-radius: 8px;
+        color: var(--color-primary-600);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 13px;
+        transition: all 0.2s;
+    }
+
+    .user-button:hover {
+        background: var(--color-primary-600);
+        color: white;
+    }
+
+    .user-button-icon {
+        font-size: 14px;
+    }
+
+    .create-user-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        text-decoration: none;
+        background: var(--color-primary-600);
+        color: #06281e;
+        border: 1px solid transparent;
+        font-weight: 700;
+        font-size: 13px;
+        min-height: 44px;
+        transition: all 0.2s;
+    }
+
+    .create-user-button:hover {
+        background: var(--color-primary-500);
+        color: #042018;
+    }
+
+    .create-user-button:focus-visible {
+        outline: 2px solid var(--color-primary-300);
+        outline-offset: 2px;
+    }
+
+    @@media (max-width: 768px) {
+        .user-header {
+            flex-direction: column;
+        }
+
+        .create-user-button {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<!-- HEADER -->
+<div class="user-header">
+    <div>
+        <h1>Korisnici</h1>
+        <p class="user-count">
+            @if (Model.Count == 0)
+            {
+                <span>Nema registriranih korisnika</span>
+            }
+            else
+            {
+                <span>Ukupno @Model.Count @(Model.Count == 1 ? "korisnik" : "korisnika")</span>
+            }
+        </p>
+    </div>
+    <a asp-action="Create" class="create-user-button">
+        <i class="fas fa-user-plus"></i>
+        Dodaj korisnika
+    </a>
+</div>
+
+<!-- USER GRID -->
+@if (Model.Count > 0)
+{
+    <div class="user-grid">
+        @foreach (var korisnik in Model)
+        {
+            <article class="user-card">
+                <!-- NAME -->
+                <h3 class="user-name">@korisnik.Ime @korisnik.Prezime</h3>
+
+                <!-- EMAIL -->
+                <p class="user-email" title="@korisnik.Email">@korisnik.Email</p>
+
+                <!-- META: Registration Date, Height, Weight -->
+                <div class="user-meta">
+                    <div class="user-meta-item">
+                        <div class="user-meta-label">Registracija</div>
+                        <div class="user-meta-value">@korisnik.DatumRegistracije.ToString("dd.MM.yyyy.")</div>
+                    </div>
+                    <div class="user-meta-item">
+                        <div class="user-meta-label">Visina</div>
+                        <div class="user-meta-value">@korisnik.Visina cm</div>
+                    </div>
+                    <div class="user-meta-item">
+                        <div class="user-meta-label">Težina</div>
+                        <div class="user-meta-value">@korisnik.Tezina kg</div>
+                    </div>
+                </div>
+
+                <!-- CURRENT PLAN -->
+                @if (korisnik.TrenutniPlan != null)
+                {
+                    <div class="user-plan">
+                        <i class="fas fa-calendar"></i>
+                        <span>Plan: <span class="user-plan-name">@korisnik.TrenutniPlan.Naziv</span></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="user-plan" style="opacity: 0.6;">
+                        <i class="fas fa-circle-xmark"></i>
+                        <span>Nema dodjeljenog plana</span>
+                    </div>
+                }
+
+                <!-- ACTIONS -->
+                <div class="user-footer">
+                    <a asp-action="Details" asp-route-id="@korisnik.Id" class="user-button">
+                        <i class="fas fa-arrow-right user-button-icon"></i>
+                        Detalji
+                    </a>
+                </div>
+            </article>
+        }
+    </div>
+}
+else
+{
+    <!-- EMPTY STATE -->
+    <div class="empty-state">
+        <div class="empty-state-icon">👥</div>
+        <h2>Nema korisnika</h2>
+        <p>Nema registriranih korisnika za prikaz.</p>
+    </div>
+}

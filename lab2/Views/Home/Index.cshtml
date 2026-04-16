@@ -1,0 +1,112 @@
+﻿@model HomeDashboardViewModel
+
+@{
+    ViewData["Title"] = "Početna";
+
+    var moduleRows = new[]
+    {
+        (Title: "Treninzi", Count: Model.TreninziCount, Description: "Zabilježene i planirane sesije", Icon: "fa-dumbbell", Controller: "Trening"),
+        (Title: "Mjerenja", Count: Model.MjerenjaCount, Description: "Težina, opsezi i kontrolne točke", Icon: "fa-weight-scale", Controller: "Mjerenje"),
+        (Title: "Planovi", Count: Model.PlanoviCount, Description: "Programi rada i rasporedi", Icon: "fa-clipboard-list", Controller: "Plan"),
+        (Title: "Ciljevi", Count: Model.CiljeviCount, Description: "Smjer napretka i fokus", Icon: "fa-bullseye", Controller: "Cilj"),
+        (Title: "Vježbe", Count: Model.VjezbeCount, Description: "Katalog vježbi i opreme", Icon: "fa-book-open", Controller: "Vjezba"),
+        (Title: "Korisnici", Count: Model.KorisniciCount, Description: "Članovi i njihovi profili", Icon: "fa-users", Controller: "Korisnik")
+    };
+}
+
+<div class="home-page">
+    <section class="home-hero">
+        <div class="home-hero__content">
+            <p class="home-eyebrow">GymTracker</p>
+            <h1 class="home-title">Praćenje treninga, mjerenja i planova na jednom mjestu.</h1>
+            <p class="home-lead">
+                Osnovni pregled sustava za treninge, napredak i članove.
+            </p>
+
+            <div class="home-hero__actions">
+                <a asp-controller="Trening" asp-action="Index" class="home-button home-button--primary">
+                    <i class="fas fa-dumbbell" aria-hidden="true"></i>
+                    <span>Treninzi</span>
+                </a>
+                <a asp-controller="Plan" asp-action="Index" class="home-button home-button--secondary">
+                    <i class="fas fa-clipboard-list" aria-hidden="true"></i>
+                    <span>Planovi</span>
+                </a>
+            </div>
+        </div>
+
+        <aside class="home-hero__panel" aria-label="Kratki pregled sustava">
+            <div class="home-hero__panel-header">
+                <span class="home-pill">Osnovno</span>
+                <span class="home-hero__panel-note">Glavni moduli</span>
+            </div>
+
+            <ul class="home-stat-grid" aria-label="Kratak pregled modula">
+                <li class="home-stat-card">
+                    <span class="home-stat-label"><i class="fas fa-dumbbell" aria-hidden="true"></i> Treninzi</span>
+                    <strong class="home-stat-value">@Model.TreninziCount</strong>
+                    <span class="home-stat-note">sesija u sustavu</span>
+                </li>
+                <li class="home-stat-card">
+                    <span class="home-stat-label"><i class="fas fa-weight-scale" aria-hidden="true"></i> Mjerenja</span>
+                    <strong class="home-stat-value">@Model.MjerenjaCount</strong>
+                    <span class="home-stat-note">zabilježenih točaka</span>
+                </li>
+                <li class="home-stat-card">
+                    <span class="home-stat-label"><i class="fas fa-clipboard-list" aria-hidden="true"></i> Planovi</span>
+                    <strong class="home-stat-value">@Model.PlanoviCount</strong>
+                    <span class="home-stat-note">aktivnih planova</span>
+                </li>
+                <li class="home-stat-card">
+                    <span class="home-stat-label"><i class="fas fa-users" aria-hidden="true"></i> Korisnici</span>
+                    <strong class="home-stat-value">@Model.KorisniciCount</strong>
+                    <span class="home-stat-note">registriranih profila</span>
+                </li>
+            </ul>
+        </aside>
+    </section>
+
+    <section class="home-section">
+        <div class="home-section__heading">
+            <div>
+                <h2>Moduli</h2>
+            </div>
+        </div>
+
+        <div class="home-module-grid">
+            @foreach (var module in moduleRows)
+            {
+                <a asp-controller="@module.Controller" asp-action="Index" class="home-module-card" aria-label="Otvori modul @module.Title">
+                    <span class="home-module-icon"><i class="fas @module.Icon" aria-hidden="true"></i></span>
+                    <div class="home-module-copy">
+                        <h3>@module.Title</h3>
+                        <p>@module.Description</p>
+                    </div>
+                    <div class="home-module-meta">
+                        <strong class="home-module-count">@module.Count</strong>
+                        <span class="home-module-share">zapisa</span>
+                    </div>
+                </a>
+            }
+        </div>
+    </section>
+
+    <section class="home-section home-register-section">
+        <div class="home-section__heading">
+            <div>
+                <p class="home-kicker">Brza akcija</p>
+                <h2>Dodaj novog korisnika</h2>
+            </div>
+            <span class="home-section__meta">Početak korisničkog toka</span>
+        </div>
+
+        <div class="home-register-cta">
+            <p class="home-register-cta__text">
+            </p>
+            <a asp-controller="Korisnik" asp-action="Create" class="home-button home-button--primary home-register-cta__button" aria-label="Dodaj korisnika">
+                <i class="fas fa-user-plus" aria-hidden="true"></i>
+                <span>Dodaj korisnika</span>
+            </a>
+        </div>
+    </section>
+</div>

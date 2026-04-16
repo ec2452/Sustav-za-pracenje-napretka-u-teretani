@@ -1,0 +1,289 @@
+@model Sustavzapracenjenapretkauteretani.Models.KorisnikCreateViewModel
+
+@{
+    ViewData["Title"] = "Novi korisnik";
+}
+
+<style>
+    .create-wrapper {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .create-header {
+        margin-bottom: 28px;
+    }
+
+    .create-header h1 {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--color-text-primary);
+        margin-bottom: 8px;
+    }
+
+    .create-header p {
+        color: var(--color-text-secondary);
+        margin: 0;
+    }
+
+    .create-form {
+        display: grid;
+        gap: 20px;
+    }
+
+    .form-section {
+        background: var(--color-surface-800);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 12px;
+        padding: 24px;
+    }
+
+    .form-section h2 {
+        font-size: 18px;
+        margin: 0 0 16px 0;
+        color: var(--color-text-primary);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-field-full {
+        grid-column: 1 / -1;
+    }
+
+    .form-field label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--color-text-secondary);
+    }
+
+    .form-field input,
+    .form-field select {
+        background: var(--color-base-800);
+        border: 1px solid var(--color-border-default);
+        color: var(--color-text-primary);
+        border-radius: 8px;
+        padding: 10px 12px;
+        min-height: 44px;
+        font-size: 14px;
+    }
+
+    .form-field input:focus,
+    .form-field select:focus {
+        outline: 2px solid rgba(16, 185, 129, 0.55);
+        outline-offset: 1px;
+        border-color: var(--color-primary-600);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.16);
+    }
+
+    .field-hint {
+        font-size: 12px;
+        color: var(--color-text-tertiary);
+    }
+
+    .validation-text {
+        color: #fca5a5;
+        font-size: 12px;
+    }
+
+    .validation-summary {
+        background: rgba(220, 38, 38, 0.14);
+        border: 1px solid rgba(220, 38, 38, 0.45);
+        border-radius: 10px;
+        padding: 12px 14px;
+        color: #fecaca;
+        margin-bottom: 16px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+    }
+
+    .btn-main,
+    .btn-muted {
+        min-height: 44px;
+        padding: 10px 18px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .btn-main {
+        background: var(--color-primary-600);
+        color: #042018;
+    }
+
+    .btn-main:hover {
+        background: var(--color-primary-500);
+    }
+
+    .btn-muted {
+        background: transparent;
+        border-color: var(--color-border-default);
+        color: var(--color-text-secondary);
+    }
+
+    .btn-muted:hover {
+        border-color: var(--color-primary-600);
+        color: var(--color-text-primary);
+    }
+
+    @@media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .btn-main,
+        .btn-muted {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="create-wrapper">
+    <div class="create-header">
+        <h1>Novi korisnik</h1>
+        <p>U jednom koraku unesite osnovne podatke, početno mjerenje i prvi cilj korisnika.</p>
+    </div>
+
+    <form asp-action="Create" method="post" class="create-form">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <section class="form-section">
+            <h2>Osnovni podaci</h2>
+            <div class="form-grid">
+                <div class="form-field">
+                    <label asp-for="Ime"></label>
+                    <input asp-for="Ime" />
+                    <span asp-validation-for="Ime" class="validation-text"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="Prezime"></label>
+                    <input asp-for="Prezime" />
+                    <span asp-validation-for="Prezime" class="validation-text"></span>
+                </div>
+
+                <div class="form-field form-field-full">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" />
+                    <span asp-validation-for="Email" class="validation-text"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="DatumRodjenja"></label>
+                    <input asp-for="DatumRodjenja" type="date" />
+                    <span asp-validation-for="DatumRodjenja" class="validation-text"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="PlanId"></label>
+                    <select asp-for="PlanId">
+                        <option value="">Bez plana</option>
+                        @foreach (var plan in Model.AvailablePlanovi)
+                        {
+                            <option value="@plan.Id">@plan.Naziv</option>
+                        }
+                    </select>
+                    <span asp-validation-for="PlanId" class="validation-text"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="Visina"></label>
+                    <input asp-for="Visina" type="number" min="100" max="250" step="1" />
+                    <span asp-validation-for="Visina" class="validation-text"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="Tezina"></label>
+                    <input asp-for="Tezina" type="number" min="30" max="300" step="0.1" />
+                    <span asp-validation-for="Tezina" class="validation-text"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="form-section">
+            <h2>Početno mjerenje</h2>
+            <div class="form-grid">
+                <div class="form-field">
+                    <label asp-for="DatumMjerenja"></label>
+                    <input asp-for="DatumMjerenja" type="date" />
+                    <span asp-validation-for="DatumMjerenja" class="validation-text"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="MjerenjeTezina"></label>
+                    <input asp-for="MjerenjeTezina" type="number" min="30" max="300" step="0.1" />
+                    <span asp-validation-for="MjerenjeTezina" class="validation-text"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="PostotakMasti"></label>
+                    <input asp-for="PostotakMasti" type="number" min="3" max="60" step="0.1" />
+                    <span asp-validation-for="PostotakMasti" class="validation-text"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="OpsegStruka"></label>
+                    <input asp-for="OpsegStruka" type="number" min="40" max="200" step="0.1" />
+                    <span asp-validation-for="OpsegStruka" class="validation-text"></span>
+                    <span class="field-hint">Ostavite prazno ako mjera nije poznata.</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="form-section">
+            <h2>Početni cilj</h2>
+            <div class="form-grid">
+                <div class="form-field">
+                    <label asp-for="TipCilja"></label>
+                    <select asp-for="TipCilja" asp-items="Html.GetEnumSelectList<TipCilja>()"></select>
+                    <span asp-validation-for="TipCilja" class="validation-text"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="CiljanaVrijednost"></label>
+                    <input asp-for="CiljanaVrijednost" type="number" min="0.1" step="0.1" />
+                    <span asp-validation-for="CiljanaVrijednost" class="validation-text"></span>
+                </div>
+
+                <div class="form-field form-field-full">
+                    <label asp-for="RokCilja"></label>
+                    <input asp-for="RokCilja" type="date" />
+                    <span asp-validation-for="RokCilja" class="validation-text"></span>
+                </div>
+            </div>
+        </section>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn-muted">Odustani</a>
+            <button type="submit" class="btn-main">Spremi korisnika</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

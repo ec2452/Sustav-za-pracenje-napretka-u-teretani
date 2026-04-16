@@ -1,0 +1,129 @@
+@model MjerenjeIndexViewModel
+
+@{
+    ViewData["Title"] = "Mjerenja";
+}
+
+<!-- HEADER -->
+<div class="measurements-header">
+    <div>
+        <h1>Mjerenja</h1>
+        <p class="measurements-count">
+            @if (Model.TotalMjerenjaCount == 0)
+            {
+                <span>Nema mjerenja</span>
+            }
+            else
+            {
+                <span>Ukupno @Model.TotalMjerenjaCount mjerenja</span>
+            }
+        </p>
+    </div>
+</div>
+
+<!-- CONTROLS (FILTER) -->
+@if (Model.AvailableUsers.Count > 0)
+{
+    <div class="measurements-controls">
+        <label for="filterUser">Filtriraj po korisniku:</label>
+        <form method="get" style="display: flex; gap: 8px; width: 100%; flex: 1; max-width: 280px;">
+            <select id="filterUser" name="userId" onchange="this.form.submit()">
+                <option value="">Svi korisnici (@Model.TotalMjerenjaCount)</option>
+                @foreach (var user in Model.AvailableUsers)
+                {
+                    <option value="@user.Id" selected="@(Model.SelectedUserId == user.Id)">
+                        @user.FullName (@user.MjerenjaCount)
+                    </option>
+                }
+            </select>
+        </form>
+    </div>
+}
+
+<!-- MEASUREMENTS GRID -->
+@if (Model.Mjerenja.Count > 0)
+{
+    <div class="measurements-grid">
+        @foreach (var item in Model.Mjerenja)
+        {
+            var m = item.Mjerenje!;
+            var trendClass = item.TrendDirection == "up" ? "trend-up" : 
+                            item.TrendDirection == "down" ? "trend-down" : "";
+            var trendArrow = item.TrendDirection == "up" ? "↑" : 
+                            item.TrendDirection == "down" ? "↓" : "→";
+            var trendArrowClass = item.TrendDirection == "up" ? "up" : 
+                                 item.TrendDirection == "down" ? "down" : "neutral";
+
+            <article class="measurement-card @trendClass">
+                <!-- HEADER: DATE + USER -->
+                <div class="card-header-meta">
+                    <div>
+                        <div class="card-date">@m.DatumMjerenja.ToString("dd. MMMM yyyy.")</div>
+                        <div class="card-user">@item.UserFullName</div>
+                    </div>
+                </div>
+
+                <!-- PRIMARY METRIC: WEIGHT -->
+                <div class="primary-metric">
+                    <div>
+                        <div class="measurement-label">Težina</div>
+                        <div class="weight-display">
+                            <div class="weight-value">@m.Tezina.ToString("0.0")</div>
+                            <div class="weight-unit">kg</div>
+                        </div>
+                    </div>
+                    @if (!item.IsFirstMeasurement && item.WeightChange.HasValue)
+                    {
+                        <div class="trend-indicator @trendArrowClass" 
+                             aria-label="Trend: @(item.TrendDirection == "up" ? "povećana" : item.TrendDirection == "down" ? "smanjena" : "nije promijenjena") za @item.WeightChange.Value.ToString("0.0") kg">
+                            <span class="trend-arrow">@trendArrow</span>
+                            <span>@item.WeightChange.Value.ToString("+0.0;-0.0")kg</span>
+                        </div>
+                    }
+                </div>
+
+                <!-- SECONDARY METRICS -->
+                <div class="secondary-metrics">
+                    <div class="measurement-metric-item">
+                        <div class="measurement-metric-label">% Masti</div>
+                        <div class="measurement-metric-value @(m.PostotakMasti == null ? "missing" : "")">
+                            @(m.PostotakMasti?.ToString("0.0") ?? "—")
+                        </div>
+                    </div>
+                    <div class="measurement-metric-item">
+                        <div class="measurement-metric-label">Opseg Struka</div>
+                        <div class="measurement-metric-value @(m.OpsegStruka == null ? "missing" : "")">
+                            @(m.OpsegStruka?.ToString("0.0") == null ? "—" : m.OpsegStruka?.ToString("0.0") + " cm")
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACTION -->
+                <div class="card-footer-action">
+                    <a asp-action="Details" asp-route-id="@m.Id" aria-label="Prikaži detalje za @item.UserFullName od @m.DatumMjerenja.ToString("dd.MM.yyyy.")">
+                        Detalji
+                        <span class="action-arrow">→</span>
+                    </a>
+                </div>
+            </article>
+        }
+    </div>
+}
+else
+{
+    <!-- EMPTY STATE -->
+    <div class="empty-state">
+        <div class="empty-state-icon">📊</div>
+        <h2>Nema mjerenja</h2>
+        <p>
+            @if (Model.SelectedUserId.HasValue)
+            {
+                <span>Ovaj korisnik nema registriranih mjerenja.</span>
+            }
+            else
+            {
+                <span>Počnite dodavanjem prvog mjerenja.</span>
+            }
+        </p>
+    </div>
+}

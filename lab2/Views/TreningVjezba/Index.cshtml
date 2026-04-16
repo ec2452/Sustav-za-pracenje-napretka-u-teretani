@@ -1,0 +1,40 @@
+@model List<TreningVjezba>
+
+@{
+    ViewData["Title"] = "TreningVjezbe";
+}
+
+<h1 class="mb-3">Trening vjezbe</h1>
+<p class="text-muted">Poveznica treninga i vjezbi s detaljima izvedbe.</p>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Trening</th>
+                <th>Vjezba</th>
+                <th>Redni broj</th>
+                <th>Broj serija</th>
+                <th>Ponavljanja</th>
+                <th>Tezina</th>
+                <th>Odmor</th>
+                <th>Detalji</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tv in Model)
+            {
+                <tr>
+                    <td>@tv.TreningId</td>
+                    <td>@(tv.Vjezba?.Naziv ?? "-")</td>
+                    <td>@tv.Redoslijed</td>
+                    <td>@tv.BrojSerija</td>
+                    <td>@tv.BrojPonavljanja</td>
+                    <td>@(tv.TezinaKg?.ToString("0.#") ?? "-")</td>
+                    <td>@tv.OdmorSekundi sec</td>
+                    <td><a asp-action="Details" asp-route-id="@tv.Id">Detalji</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,397 @@
+@model Vjezba
+
+@{
+    ViewData["Title"] = $"Detalji vježbe - {Model.Naziv}";
+    var difficultyClass = $"level-{Model.RazinaTezine}";
+    var difficultyText = Model.RazinaTezine switch
+    {
+        1 => "Početnik",
+        2 => "Početni",
+        3 => "Srednji",
+        4 => "Napredan",
+        5 => "Profesionalno",
+        _ => "Nepoznato"
+    };
+    var muscleGroupDisplay = Model.MisicnaSkupina.ToString();
+    var muscleGroupColor = Model.MisicnaSkupina switch
+    {
+        MisicnaSkupina.Prsa => "#ef4444",
+        MisicnaSkupina.Leda => "#f97316",
+        MisicnaSkupina.Ramena => "#eab308",
+        MisicnaSkupina.Biceps => "#3b82f6",
+        MisicnaSkupina.Triceps => "#06b6d4",
+        MisicnaSkupina.Noge => "#8b5cf6",
+        MisicnaSkupina.Trbuh => "#14b8a6",
+        MisicnaSkupina.Kardio => "#ec4899",
+        MisicnaSkupina.CijeloTijelo => "#6366f1",
+        _ => "#64748b"
+    };
+}
+
+<style>
+    .exercise-hero {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 16px;
+        padding: 48px 32px;
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .exercise-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .exercise-hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .difficulty-stars {
+        display: inline-flex;
+        gap: 6px;
+        margin-top: 12px;
+    }
+
+    .difficulty-stars i {
+        font-size: 18px;
+        opacity: 0.3;
+        transition: color 0.2s, opacity 0.2s;
+    }
+
+    .difficulty-stars i.filled {
+        opacity: 1;
+    }
+
+    .video-container {
+        background: var(--color-surface-800);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 32px;
+        text-align: center;
+    }
+
+    .related-section {
+        margin-bottom: 40px;
+    }
+
+    .related-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .related-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+    }
+
+    .related-item {
+        background: var(--color-surface-800);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 8px;
+        padding: 16px;
+        transition: all 0.2s;
+    }
+
+    .related-item:hover {
+        border-color: var(--color-primary-500);
+        background: var(--color-surface-700);
+    }
+
+    .related-item-title {
+        font-weight: 600;
+        color: var(--color-text-primary);
+        margin-bottom: 8px;
+    }
+
+    .related-item-meta {
+        font-size: 13px;
+        color: var(--color-text-tertiary);
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .empty-state-related {
+        text-align: center;
+        padding: 32px 24px;
+        background: var(--color-surface-800);
+        border: 1px dashed var(--color-border-subtle);
+        border-radius: 8px;
+        color: var(--color-text-tertiary);
+    }
+
+    .specs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .spec-card {
+        background: var(--color-surface-800);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .spec-label {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--color-text-tertiary);
+        margin-bottom: 8px;
+    }
+
+    .spec-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--color-primary-600);
+    }
+
+    .back-nav {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 6px;
+        color: #3b82f6;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+        margin-bottom: 32px;
+        transition: all 0.2s;
+    }
+
+    .back-nav:hover {
+        background: rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.5);
+    }
+</style>
+
+<!-- BACK BUTTON -->
+<a asp-action="Index" class="back-nav">
+    <i class="fas fa-arrow-left"></i>
+    Natrag na listu vježbi
+</a>
+
+<!-- HERO SECTION -->
+<div class="exercise-hero">
+    <div class="exercise-hero-content">
+        <h1 style="margin: 0 0 16px 0; font-size: 42px; font-weight: 800; color: var(--color-text-primary); line-height: 1.1;">
+            @Model.Naziv
+        </h1>
+
+        <!-- DIFFICULTY STARS -->
+        <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 24px;">
+            <div>
+                <p style="margin: 0 0 4px 0; font-size: 12px; text-transform: uppercase; color: var(--color-text-tertiary); letter-spacing: 0.5px;">
+                    Razina Težine
+                </p>
+                <div class="difficulty-stars">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <i class="fas fa-star @(i <= Model.RazinaTezine ? "filled" : "")" style="color: @(i <= Model.RazinaTezine ? "#f59e0b" : "currentColor");"></i>
+                    }
+                </div>
+            </div>
+            <div style="border-left: 2px solid rgba(255,255,255,0.2); padding-left: 24px;">
+                <p style="margin: 0 0 4px 0; font-size: 12px; text-transform: uppercase; color: var(--color-text-tertiary); letter-spacing: 0.5px;">
+                    Mišićna Skupina
+                </p>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 12px; height: 12px; background: @muscleGroupColor; border-radius: 4px;"></div>
+                    <span style="font-size: 18px; font-weight: 700; color: var(--color-text-primary);">@muscleGroupDisplay</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHORT DESCRIPTION -->
+        @if (!string.IsNullOrWhiteSpace(Model.Opis))
+        {
+            <p style="margin: 0; font-size: 16px; color: var(--color-text-secondary); line-height: 1.5; max-width: 600px;">
+                @(Model.Opis.Length > 150 ? Model.Opis.Substring(0, 150) + "..." : Model.Opis)
+            </p>
+        }
+    </div>
+</div>
+
+<!-- FULL DESCRIPTION -->
+@if (!string.IsNullOrWhiteSpace(Model.Opis))
+{
+    <div style="background: var(--color-surface-800); border: 1px solid var(--color-border-subtle); border-radius: 12px; padding: 28px; margin-bottom: 40px; border-left: 4px solid @muscleGroupColor;">
+        <h2 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 700; color: var(--color-text-primary);">
+            📝 Detaljni Opis Vježbe
+        </h2>
+        <p style="margin: 0; line-height: 1.8; color: var(--color-text-secondary); font-size: 15px;">
+            @Model.Opis
+        </p>
+    </div>
+}
+
+<!-- SPECS GRID -->
+<div class="specs-grid">
+    <div class="spec-card">
+        <div class="spec-label">
+            <i class="fas fa-layer-group"></i> Težina
+        </div>
+        <div class="spec-value">@Model.RazinaTezine</div>
+        <p style="margin: 8px 0 0; font-size: 12px; color: var(--color-text-tertiary);">od 5</p>
+    </div>
+
+    <div class="spec-card">
+        <div class="spec-label">
+            <i class="fas fa-toolbox"></i> Oprema
+        </div>
+        <div class="spec-value" style="color: @(Model.PotrebnaOprema ? "#10b981" : "#64748b");">
+            @(Model.PotrebnaOprema ? "DA" : "NE")
+        </div>
+        <p style="margin: 8px 0 0; font-size: 12px; color: var(--color-text-tertiary);">
+            @(Model.PotrebnaOprema ? "Potrebna je oprema" : "Bez opreme")
+        </p>
+    </div>
+
+    <div class="spec-card">
+        <div class="spec-label">
+            <i class="fas fa-dumbbell"></i> Tip
+        </div>
+        <div class="spec-value" style="font-size: 18px;">@muscleGroupDisplay</div>
+        <p style="margin: 8px 0 0; font-size: 12px; color: var(--color-text-tertiary);">Mišićna skupina</p>
+    </div>
+</div>
+
+<!-- VIDEO SECTION -->
+@if (!string.IsNullOrWhiteSpace(Model.VideoUrl))
+{
+    <div class="video-container">
+        <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: var(--color-text-primary);">
+            <i class="fas fa-film"></i> Video Demonstracija
+        </h3>
+        <p style="margin: 0 0 16px 0; color: var(--color-text-secondary); font-size: 14px;">
+            Pogledajte kako se ispravno izvodi ova vježba
+        </p>
+        <a href="@Model.VideoUrl" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.2s; border: none; cursor: pointer;">
+            <i class="fas fa-play" style="font-size: 14px;"></i>
+            Otvori Video na YouTubeu
+            <i class="fas fa-external-link-alt" style="font-size: 11px;"></i>
+        </a>
+    </div>
+}
+else
+{
+    <div class="video-container" style="color: var(--color-text-tertiary);">
+        <i class="fas fa-video" style="font-size: 36px; margin-bottom: 12px; opacity: 0.5; display: block;"></i>
+        <p style="margin: 0; font-size: 14px;">Nema dostupnog videa za ovu vježbu</p>
+    </div>
+}
+
+<!-- RELATED TRAININGS -->
+@if (Model.TreningVjezbe != null && Model.TreningVjezbe.Count > 0)
+{
+    <div class="related-section">
+        <div class="related-title">
+            <i class="fas fa-users"></i>
+            Koristi se u Trenicima
+        </div>
+        <div class="related-list">
+            @foreach (var treningVjezba in Model.TreningVjezbe.Take(6))
+            {
+                <div class="related-item">
+                    <div class="related-item-title">@treningVjezba.Vjezba?.Naziv</div>
+                    <div class="related-item-meta">
+                        <span>
+                            <i class="fas fa-tag"></i>
+                            @(treningVjezba.BrojSerija) serija
+                        </span>
+                        <span>
+                            <i class="fas fa-heartbeat"></i>
+                            @(treningVjezba.BrojPonavljanja) ponavljanja
+                        </span>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (Model.TreningVjezbe.Count > 6)
+        {
+            <p style="text-align: center; color: var(--color-text-tertiary); margin-top: 16px; font-size: 13px;">
+                + još @(Model.TreningVjezbe.Count - 6) treninga
+            </p>
+        }
+    </div>
+}
+else
+{
+    <div class="related-section">
+        <div class="related-title">
+            <i class="fas fa-users"></i>
+            Koristi se u Trenicima
+        </div>
+        <div class="empty-state-related">
+            <i class="fas fa-inbox" style="font-size: 32px; margin-bottom: 12px; display: block; opacity: 0.5;"></i>
+            <p style="margin: 0;">Ova vježba se još ne koristi ni u jednom treningu</p>
+        </div>
+    </div>
+}
+
+<!-- RELATED PLANS -->
+@if (Model.Planovi != null && Model.Planovi.Count > 0)
+{
+    <div class="related-section">
+        <div class="related-title">
+            <i class="fas fa-calendar"></i>
+            Koristi se u Planovima
+        </div>
+        <div class="related-list">
+            @foreach (var plan in Model.Planovi.Take(6))
+            {
+                <div class="related-item">
+                    <div class="related-item-title">@plan.Naziv</div>
+                    <div class="related-item-meta">
+                        <span>
+                            <i class="fas fa-layer-group"></i>
+                            @(plan.TrajanjeTjedana) tjedana
+                        </span>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (Model.Planovi.Count > 6)
+        {
+            <p style="text-align: center; color: var(--color-text-tertiary); margin-top: 16px; font-size: 13px;">
+                + još @(Model.Planovi.Count - 6) planova
+            </p>
+        }
+    </div>
+}
+else
+{
+    <div class="related-section">
+        <div class="related-title">
+            <i class="fas fa-calendar"></i>
+            Koristi se u Planovima
+        </div>
+        <div class="empty-state-related">
+            <i class="fas fa-clipboard-list" style="font-size: 32px; margin-bottom: 12px; display: block; opacity: 0.5;"></i>
+            <p style="margin: 0;">Ova vježba se još ne koristi ni u jednom planu</p>
+        </div>
+    </div>
+}

@@ -1,0 +1,82 @@
+@model List<Plan>
+
+@{
+    ViewData["Title"] = "Planovi";
+}
+
+<!-- HEADER -->
+<div class="plan-header">
+    <div>
+        <h1>Planovi</h1>
+        <p class="plan-count">
+            @if (Model.Count == 0)
+            {
+                <span>Nema dostupnih planova</span>
+            }
+            else
+            {
+                <span>Ukupno @Model.Count planova</span>
+            }
+        </p>
+    </div>
+</div>
+
+<!-- PLAN GRID -->
+@if (Model.Count > 0)
+{
+    <div class="plan-grid">
+        @foreach (var plan in Model)
+        {
+            var experienceDisplay = plan.Razina.ToString();
+
+            <article class="plan-card">
+                <!-- TITLE -->
+                <h3>@plan.Naziv</h3>
+
+                <!-- DESCRIPTION -->
+                <div class="plan-description @(string.IsNullOrWhiteSpace(plan.Opis) ? "empty" : "")">
+                    @(string.IsNullOrWhiteSpace(plan.Opis) ? "Nema dostupnog opisa" : plan.Opis)
+                </div>
+
+                <!-- META: Duration, Experience, Creation Date -->
+                <div class="plan-meta">
+                    <div class="plan-meta-item">
+                        <div class="plan-meta-label">Trajanje</div>
+                        <div class="plan-meta-value">@plan.TrajanjeTjedana tjedni</div>
+                    </div>
+                    <div class="plan-meta-item">
+                        <div class="plan-meta-label">Razina</div>
+                        <div class="plan-meta-value">@experienceDisplay</div>
+                    </div>
+                    <div class="plan-meta-item">
+                        <div class="plan-meta-label">Kreirano</div>
+                        <div class="plan-meta-value">@plan.DatumKreiranja.ToString("dd.MM.yyyy.")</div>
+                    </div>
+                </div>
+
+                <!-- EXERCISES COUNT -->
+                <div class="plan-exercises-count">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>@plan.Vjezbe.Count @(plan.Vjezbe.Count == 1 ? "vježba" : "vježbi")</span>
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="plan-footer">
+                    <a asp-action="Details" asp-route-id="@plan.Id" class="plan-button">
+                        <i class="fas fa-arrow-right plan-button-icon"></i>
+                        Detalji
+                    </a>
+                </div>
+            </article>
+        }
+    </div>
+}
+else
+{
+    <!-- EMPTY STATE -->
+    <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <h2>Nema planova</h2>
+        <p>Počnite dodavanjem prvog plana do kataloga.</p>
+    </div>
+}

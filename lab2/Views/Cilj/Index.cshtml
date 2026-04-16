@@ -1,0 +1,86 @@
+@model List<Cilj>
+
+@{
+    ViewData["Title"] = "Ciljevi";
+}
+
+<!-- HEADER -->
+<div class="goal-header">
+    <div>
+        <h1>Ciljevi</h1>
+        <p class="goal-count">
+            @if (Model.Count == 0)
+            {
+                <span>Nema dostupnih ciljeva</span>
+            }
+            else
+            {
+                <span>Ukupno @Model.Count ciljeva</span>
+            }
+        </p>
+    </div>
+</div>
+
+<!-- GOAL GRID -->
+@if (Model.Count > 0)
+{
+    <div class="goal-grid">
+        @foreach (var goal in Model)
+        {
+            var statusClass = goal.Postignut ? "completed" : "pending";
+            var statusText = goal.Postignut ? "Postignut" : "Čekajući";
+            var userName = goal.Korisnik is null ? $"Korisnik {goal.KorisnikId}" : $"{goal.Korisnik.Ime} {goal.Korisnik.Prezime}";
+
+            <article class="goal-card">
+                <!-- TITLE -->
+                <h3>@goal.Tip</h3>
+
+                <!-- USER -->
+                <div style="font-size: 13px; color: var(--color-text-secondary);">
+                    👤 @userName
+                </div>
+
+                <!-- META: Ciljana vrijednost, Rok -->
+                <div class="goal-meta">
+                    <div class="goal-meta-item">
+                        <div class="goal-meta-label">Ciljana Vrijednost</div>
+                        <div class="goal-meta-value">@goal.CiljanaVrijednost</div>
+                    </div>
+                    <div class="goal-meta-item">
+                        <div class="goal-meta-label">Rok</div>
+                        <div class="goal-meta-value">@goal.Rok.ToString("dd.MM.yyyy.")</div>
+                    </div>
+                </div>
+
+                <!-- STATUS -->
+                <div class="goal-status-badge @statusClass">
+                    @if (goal.Postignut)
+                    {
+                        <span>✓ @statusText</span>
+                    }
+                    else
+                    {
+                        <span>⏳ @statusText</span>
+                    }
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="goal-footer">
+                    <a asp-action="Details" asp-route-id="@goal.Id" class="goal-button">
+                        <i class="fas fa-arrow-right goal-button-icon"></i>
+                        Detalji
+                    </a>
+                </div>
+            </article>
+        }
+    </div>
+}
+else
+{
+    <!-- EMPTY STATE -->
+    <div class="empty-state">
+        <div class="empty-state-icon">🎯</div>
+        <h2>Nema ciljeva</h2>
+        <p>Počnite dodavanjem prvog cilja za praćenje napretka.</p>
+    </div>
+}

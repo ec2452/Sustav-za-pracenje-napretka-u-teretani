@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - GymTracker</title>
+    <!-- Non-standard UX CSS base -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Sustavzapracenjenapretkauteretani.styles.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- DESKTOP SIDEBAR -->
+        <aside class="app-sidebar app-sidebar-desktop">
+            <h2 style="color: var(--text-main); margin-bottom: var(--sp-6);">GymTracker</h2>
+            <nav style="display: flex; flex-direction: column; gap: var(--sp-2);">
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-home" style="margin-right: var(--sp-2);"></i> Početna
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Trening" ? "active" : "")" asp-controller="Trening" asp-action="Index">
+                    <i class="fas fa-dumbbell" style="margin-right: var(--sp-2);"></i> Treninzi
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Mjerenje" ? "active" : "")" asp-controller="Mjerenje" asp-action="Index">
+                    <i class="fas fa-balance-scale" style="margin-right: var(--sp-2);"></i> Mjerenja
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Plan" ? "active" : "")" asp-controller="Plan" asp-action="Index">
+                    <i class="fas fa-clipboard-list" style="margin-right: var(--sp-2);"></i> Planovi
+                </a>
+                 <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Vjezba" ? "active" : "")" asp-controller="Vjezba" asp-action="Index">
+                    <i class="fas fa-running" style="margin-right: var(--sp-2);"></i> Vježbe
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Korisnik" ? "active" : "")" asp-controller="Korisnik" asp-action="Index">
+                    <i class="fas fa-users" style="margin-right: var(--sp-2);"></i> Korisnici
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Cilj" ? "active" : "")" asp-controller="Cilj" asp-action="Index">
+                    <i class="fas fa-bullseye" style="margin-right: var(--sp-2);"></i> Ciljevi
+                </a>
+            </nav>
+        </aside>
+
+        <!-- MOBILE HEADER WITH DROPDOWN MENU -->
+        <header class="mobile-header">
+            <h2 class="mobile-logo">GymTracker</h2>
+            <input type="checkbox" id="mobile-menu-toggle" class="mobile-menu-checkbox" />
+            <label for="mobile-menu-toggle" class="mobile-menu-button">
+                <i class="fas fa-bars"></i>
+            </label>
+            <nav class="mobile-menu-dropdown">
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-home" style="margin-right: var(--sp-2);"></i> Početna
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Trening" ? "active" : "")" asp-controller="Trening" asp-action="Index">
+                    <i class="fas fa-dumbbell" style="margin-right: var(--sp-2);"></i> Treninzi
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Mjerenje" ? "active" : "")" asp-controller="Mjerenje" asp-action="Index">
+                    <i class="fas fa-balance-scale" style="margin-right: var(--sp-2);"></i> Mjerenja
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Plan" ? "active" : "")" asp-controller="Plan" asp-action="Index">
+                    <i class="fas fa-clipboard-list" style="margin-right: var(--sp-2);"></i> Planovi
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Vjezba" ? "active" : "")" asp-controller="Vjezba" asp-action="Index">
+                    <i class="fas fa-running" style="margin-right: var(--sp-2);"></i> Vježbe
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Korisnik" ? "active" : "")" asp-controller="Korisnik" asp-action="Index">
+                    <i class="fas fa-users" style="margin-right: var(--sp-2);"></i> Korisnici
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Cilj" ? "active" : "")" asp-controller="Cilj" asp-action="Index">
+                    <i class="fas fa-bullseye" style="margin-right: var(--sp-2);"></i> Ciljevi
+                </a>
+            </nav>
+        </header>
+
+        <!-- Glavni app section -->
+        <main class="app-main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Nema bootstrap JS-a, app je lean -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

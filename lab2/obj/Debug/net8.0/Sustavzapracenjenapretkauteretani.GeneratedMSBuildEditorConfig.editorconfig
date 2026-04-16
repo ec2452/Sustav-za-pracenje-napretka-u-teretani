@@ -1,0 +1,107 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Sustavzapracenjenapretkauteretani
+build_property.RootNamespace = Sustavzapracenjenapretkauteretani
+build_property.ProjectDir = C:\Users\dcurl\Desktop\Razvoj web aplikacija ASP.NEZ MVC\Sustavzapracenjenapretkauteretani\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\dcurl\Desktop\Razvoj web aplikacija ASP.NEZ MVC\Sustavzapracenjenapretkauteretani
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Cilj/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2lsalxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Cilj/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2lsalxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Korisnik/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS29yaXNuaWtcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Korisnik/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS29yaXNuaWtcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Korisnik/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS29yaXNuaWtcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Mjerenje/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWplcmVuamVcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Mjerenje/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWplcmVuamVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Plan/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxhblxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Plan/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxhblxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/TreningVjezba/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJlbmluZ1ZqZXpiYVxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/TreningVjezba/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJlbmluZ1ZqZXpiYVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Trening/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJlbmluZ1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Trening/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJlbmluZ1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Vjezba/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmplemJhXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Vjezba/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmplemJhXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/dcurl/Desktop/Razvoj web aplikacija ASP.NEZ MVC/Sustavzapracenjenapretkauteretani/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-23scsu43m4

@@ -1,0 +1,79 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "New-Item -ItemType Directory -Force -Path logs | Out-Null; Add-Content -Path logs/agent_log.txt -Value '[HOOK-TRIGGER] UserPromptSubmit hook started at ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss.fff'); $payload = [Console]::In.ReadToEnd(); $data = $null; if ($payload) { try { $data = $payload | ConvertFrom-Json } catch {} }; Add-Content -Path logs/agent_log.txt -Value ''; Add-Content -Path logs/agent_log.txt -Value '=== USER PROMPT ==='; Add-Content -Path logs/agent_log.txt -Value ('Time: ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')); Add-Content -Path logs/agent_log.txt -Value ('Session: ' + ($(if ($data -and $data.session_id) { $data.session_id } else { 'unknown' }))); Add-Content -Path logs/agent_log.txt -Value 'Prompt:'; Add-Content -Path logs/agent_log.txt -Value '---'; Add-Content -Path logs/agent_log.txt -Value $payload; Add-Content -Path logs/agent_log.txt -Value '---'; Add-Content -Path logs/agent_log.txt -Value '[HOOK-END] UserPromptSubmit hook completed'",
+            "shell": "powershell",
+            "statusMessage": "Logging user input..."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Read|Write|Edit|Glob|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "New-Item -ItemType Directory -Force -Path logs | Out-Null; Add-Content -Path logs/agent_log.txt -Value '[HOOK-TRIGGER] PreToolUse hook started at ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss.fff'); $payload = [Console]::In.ReadToEnd(); $data = $null; if ($payload) { try { $data = $payload | ConvertFrom-Json } catch {} }; $toolInput = ''; if ($data -and $data.tool_input) { try { $toolInput = ($data.tool_input | ConvertTo-Json -Compress -Depth 10) } catch {} }; if ($toolInput.Length -gt 200) { $toolInput = $toolInput.Substring(0, 200) }; Add-Content -Path logs/agent_log.txt -Value ''; Add-Content -Path logs/agent_log.txt -Value '=== TOOL USAGE ==='; Add-Content -Path logs/agent_log.txt -Value ('Time: ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')); Add-Content -Path logs/agent_log.txt -Value 'Action: Pre-execution'; Add-Content -Path logs/agent_log.txt -Value ('Tool: ' + ($(if ($data -and $data.tool_name) { $data.tool_name } else { 'unknown' }))); Add-Content -Path logs/agent_log.txt -Value ('Input: ' + $toolInput); Add-Content -Path logs/agent_log.txt -Value '[HOOK-END] PreToolUse hook completed'",
+            "shell": "powershell",
+            "statusMessage": "Logging tool usage..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Read|Write|Edit|Glob|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "New-Item -ItemType Directory -Force -Path logs | Out-Null; Add-Content -Path logs/agent_log.txt -Value '[HOOK-TRIGGER] PostToolUse hook started at ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss.fff'); $payload = [Console]::In.ReadToEnd(); $data = $null; if ($payload) { try { $data = $payload | ConvertFrom-Json } catch {} }; $result = ''; if ($data -and $null -ne $data.tool_response) { try { $result = ($data.tool_response | Out-String).Trim() } catch {} }; if ($result.Length -gt 300) { $result = $result.Substring(0, 300) }; Add-Content -Path logs/agent_log.txt -Value 'Action: Post-execution (Success)'; Add-Content -Path logs/agent_log.txt -Value ('Tool: ' + ($(if ($data -and $data.tool_name) { $data.tool_name } else { 'unknown' }))); Add-Content -Path logs/agent_log.txt -Value ('Result: ' + $result); Add-Content -Path logs/agent_log.txt -Value '---'; Add-Content -Path logs/agent_log.txt -Value '[HOOK-END] PostToolUse hook completed'",
+            "shell": "powershell",
+            "statusMessage": "Logging tool result..."
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash|Read|Write|Edit|Glob|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "New-Item -ItemType Directory -Force -Path logs | Out-Null; Add-Content -Path logs/agent_log.txt -Value '[HOOK-TRIGGER] PostToolUseFailure hook started at ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss.fff'); $payload = [Console]::In.ReadToEnd(); $data = $null; if ($payload) { try { $data = $payload | ConvertFrom-Json } catch {} }; $errorText = ''; if ($data -and $null -ne $data.tool_response) { try { $errorText = ($data.tool_response | Out-String).Trim() } catch {} }; Add-Content -Path logs/agent_log.txt -Value ''; Add-Content -Path logs/agent_log.txt -Value '=== TOOL ERROR ==='; Add-Content -Path logs/agent_log.txt -Value ('Time: ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')); Add-Content -Path logs/agent_log.txt -Value ('Tool: ' + ($(if ($data -and $data.tool_name) { $data.tool_name } else { 'unknown' }))); Add-Content -Path logs/agent_log.txt -Value ('Error: ' + $errorText); Add-Content -Path logs/agent_log.txt -Value '---'; Add-Content -Path logs/agent_log.txt -Value '[HOOK-END] PostToolUseFailure hook completed'",
+            "shell": "powershell",
+            "statusMessage": "Logging tool error..."
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "New-Item -ItemType Directory -Force -Path logs | Out-Null; Add-Content -Path logs/agent_log.txt -Value '[HOOK-TRIGGER] SessionStart hook triggered'; Add-Content -Path logs/agent_log.txt -Value ''; Add-Content -Path logs/agent_log.txt -Value '========================================='; Add-Content -Path logs/agent_log.txt -Value 'NEW SESSION STARTED'; Add-Content -Path logs/agent_log.txt -Value ('Time: ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')); Add-Content -Path logs/agent_log.txt -Value '========================================='; Add-Content -Path logs/agent_log.txt -Value '[HOOK-END] SessionStart hook completed'",
+            "shell": "powershell",
+            "statusMessage": "Initializing session logging..."
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mkdir -p logs && payload=$(cat); echo \"[SubagentStart]\" >> logs/agent_log.txt; if printf '%s' \"$payload\" | grep -qi 'ux-agent'; then echo 'UX_SUBAGENT ux-agent' >> logs/agent_log.txt; fi; if [ -n \"$payload\" ]; then echo 'PAYLOAD:' >> logs/agent_log.txt; printf '%s\n' \"$payload\" >> logs/agent_log.txt; fi",
+            "shell": "bash",
+            "statusMessage": "Logging subagent usage..."
+          }
+        ]
+      }
+    ]
+  }
+}

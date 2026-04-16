@@ -1,0 +1,21 @@
+@model TreningVjezba
+
+@{
+    ViewData["Title"] = "Detalji trening vjezbe";
+}
+
+<h1 class="mb-3">Detalji trening vježbe</h1>
+
+<table class="table table-bordered align-middle">
+    <tbody>
+        <tr><th>Trening</th><td>@(Model.Trening is null ? Model.TreningId.ToString() : $"#{Model.Trening.Id} - {Model.Trening.DatumVrijeme:dd.MM.yyyy. HH:mm}")</td></tr>
+        <tr><th>Vježba</th><td>@(Model.Vjezba?.Naziv ?? Model.VjezbaId.ToString())</td></tr>
+        <tr><th>Redni broj</th><td>@Model.Redoslijed</td></tr>
+        <tr><th>Broj serija</th><td>@Model.BrojSerija</td></tr>
+        <tr><th>Ponavljanja</th><td>@Model.BrojPonavljanja</td></tr>
+        <tr><th>Težina</th><td>@(Model.TezinaKg?.ToString("0.#") ?? "-")</td></tr>
+        <tr><th>Odmor</th><td>@Model.OdmorSekundi sec</td></tr>
+    </tbody>
+</table>
+
+<a class="btn btn-secondary" asp-action="Index">Natrag na listu</a>

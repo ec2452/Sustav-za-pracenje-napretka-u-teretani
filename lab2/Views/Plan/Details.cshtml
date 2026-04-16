@@ -1,0 +1,113 @@
+@model Plan
+
+@{
+    ViewData["Title"] = "Detalji plana";
+}
+
+<!-- HEADER SECTION -->
+<div class="plan-details-header">
+    <div>
+        <h1>@Model.Naziv</h1>
+        <p class="plan-details-subtitle">@Model.Razina iskustva · @Model.TrajanjeTjedana tjedni trajanja</p>
+    </div>
+</div>
+
+<!-- DETAILS CONTAINER -->
+<div class="plan-details-container">
+
+    <!-- DESCRIPTION SECTION -->
+    @if (!string.IsNullOrWhiteSpace(Model.Opis))
+    {
+        <div class="info-card">
+            <h3>Opis</h3>
+            <p class="plan-details-description">@Model.Opis</p>
+        </div>
+    }
+
+    <!-- PLAN INFO GRID -->
+    <div class="plan-details-grid">
+        <!-- Trajanje Card -->
+        <div class="info-card">
+            <h3>Trajanje</h3>
+            <div class="info-card-value">@Model.TrajanjeTjedana</div>
+            <span class="info-card-unit">tjedni</span>
+        </div>
+
+        <!-- Razina Card -->
+        <div class="info-card">
+            <h3>Razina iskustva</h3>
+            <div class="info-card-value">@Model.Razina</div>
+        </div>
+
+        <!-- Datum Kreiranja Card -->
+        <div class="info-card">
+            <h3>Datum kreiranja</h3>
+            <div class="info-card-value">@Model.DatumKreiranja.ToString("dd.MM.yyyy.")</div>
+        </div>
+    </div>
+
+    <!-- EXERCISES SECTION -->
+    @if (Model.Vjezbe.Any())
+    {
+        <div class="section-card">
+            <h3>Vježbe (@Model.Vjezbe.Count)</h3>
+            <div class="exercises-list">
+                @foreach (var exercise in Model.Vjezbe)
+                {
+                    <div class="exercise-list-item">
+                        <i class="fas fa-dumbbell"></i>
+                        <span>@exercise.Naziv</span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- ACTIVE USERS SECTION -->
+    @if (Model.Korisnici.Any())
+    {
+        <div class="section-card">
+            <h3>Aktivni korisnici (@Model.Korisnici.Count)</h3>
+            <p class="text-muted">Korisnici kojima je ovaj plan trenutno dodijeljen.</p>
+            <div class="users-grid">
+                @foreach (var user in Model.Korisnici)
+                {
+                    <div class="user-mini-card">
+                        <div class="user-mini-header">
+                            <i class="fas fa-user-circle"></i>
+                            <div class="user-mini-info">
+                                <div class="user-mini-name">@user.Ime @user.Prezime</div>
+                                <div class="user-mini-email">@user.Email</div>
+                            </div>
+                        </div>
+                        <div class="user-mini-meta">
+                            <span class="user-mini-badge">
+                                <i class="fas fa-ruler-vertical"></i> @user.Visina cm
+                            </span>
+                            <span class="user-mini-badge">
+                                <i class="fas fa-weight"></i> @user.Tezina kg
+                            </span>
+                        </div>
+                        <a asp-controller="Korisnik" asp-action="Details" asp-route-id="@user.Id" class="user-mini-link">
+                            Profil <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="section-card">
+            <h3>Aktivni korisnici</h3>
+            <p class="text-muted">Nema aktivnih korisnika dodijeljenih ovom planu.</p>
+        </div>
+    }
+
+</div>
+
+<!-- BACK BUTTON -->
+<a class="back-button" asp-action="Index">
+    <i class="fas fa-arrow-left"></i>
+    Natrag na listu
+</a>

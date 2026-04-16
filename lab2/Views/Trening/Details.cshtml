@@ -1,0 +1,398 @@
+@model Trening
+
+@{
+    ViewData["Title"] = "Detalji treninga";
+
+    var vrstaNaziv = Model.Vrsta switch
+    {
+        VrstaTreninga.Snaga => "Snaga",
+        VrstaTreninga.Kardio => "Kardio",
+        VrstaTreninga.HIIT => "HIIT",
+        VrstaTreninga.Funkcionalni => "Funkcionalni",
+        _ => "Mobility"
+    };
+
+    var vrstaClass = Model.Vrsta switch
+    {
+        VrstaTreninga.Snaga => "badge-vrsta badge-vrsta-snaga",
+        VrstaTreninga.Kardio => "badge-vrsta badge-vrsta-kardio",
+        VrstaTreninga.HIIT => "badge-vrsta badge-vrsta-hiit",
+        VrstaTreninga.Funkcionalni => "badge-vrsta badge-vrsta-funkcionalni",
+        _ => "badge-vrsta badge-vrsta-mobility"
+    };
+
+    var korisnikNaziv = Model.Korisnik is null
+        ? $"Korisnik #{Model.KorisnikId}"
+        : $"{Model.Korisnik.Ime} {Model.Korisnik.Prezime}";
+
+    var ukupnoSerija = Model.TreningVjezbe.Sum(v => v.BrojSerija);
+    var ukupnoPonavljanja = Model.TreningVjezbe.Sum(v => v.BrojPonavljanja * v.BrojSerija);
+}
+
+<style>
+    .training-detail-page {
+        display: grid;
+        gap: 24px;
+    }
+
+    .training-detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .training-detail-title {
+        margin: 0;
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--color-text-primary);
+    }
+
+    .training-detail-subtitle {
+        margin: 8px 0 0 0;
+        color: var(--color-text-tertiary);
+        font-size: 14px;
+    }
+
+    .training-back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid var(--color-border-default);
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+
+    .training-back-link:hover {
+        border-color: var(--color-primary-600);
+        color: var(--color-text-primary);
+    }
+
+    .training-back-link:focus-visible {
+        outline: 2px solid var(--color-primary-300);
+        outline-offset: 2px;
+    }
+
+    .training-hero-card,
+    .training-section-card {
+        background: var(--color-surface-800);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 12px;
+        padding: 24px;
+    }
+
+    .training-hero-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+    }
+
+    .badge-vrsta {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        border: 1px solid transparent;
+    }
+
+    .badge-vrsta-snaga {
+        color: #bbf7d0;
+        background: rgba(16, 185, 129, 0.15);
+        border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    .badge-vrsta-kardio {
+        color: #bfdbfe;
+        background: rgba(37, 99, 235, 0.14);
+        border-color: rgba(37, 99, 235, 0.45);
+    }
+
+    .badge-vrsta-hiit {
+        color: #fecdd3;
+        background: rgba(225, 29, 72, 0.14);
+        border-color: rgba(225, 29, 72, 0.45);
+    }
+
+    .badge-vrsta-funkcionalni {
+        color: #fde68a;
+        background: rgba(217, 119, 6, 0.14);
+        border-color: rgba(217, 119, 6, 0.45);
+    }
+
+    .badge-vrsta-mobility {
+        color: #ddd6fe;
+        background: rgba(124, 58, 237, 0.14);
+        border-color: rgba(124, 58, 237, 0.45);
+    }
+
+    .training-date {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--color-text-secondary);
+    }
+
+    .training-user-name {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        margin: 0;
+    }
+
+    .training-note {
+        margin: 12px 0 0 0;
+        padding: 12px;
+        border-radius: 8px;
+        background: rgba(16, 185, 129, 0.08);
+        border: 1px solid rgba(16, 185, 129, 0.25);
+        color: var(--color-text-secondary);
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .training-note-empty {
+        color: var(--color-text-disabled);
+        margin-top: 12px;
+        font-size: 14px;
+    }
+
+    .training-metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 12px;
+    }
+
+    .training-metric-box {
+        background: var(--color-surface-700);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 10px;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .training-metric-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--color-text-tertiary);
+        font-weight: 600;
+    }
+
+    .training-metric-value {
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 1;
+        color: var(--color-text-primary);
+    }
+
+    .training-metric-unit {
+        font-size: 12px;
+        color: var(--color-text-tertiary);
+    }
+
+    .training-section-title {
+        margin: 0 0 16px 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--color-text-primary);
+    }
+
+    .training-table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 10px;
+    }
+
+    .training-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 640px;
+    }
+
+    .training-table thead {
+        background: var(--color-surface-700);
+    }
+
+    .training-table th,
+    .training-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--color-border-subtle);
+        color: var(--color-text-secondary);
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    .training-table th {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--color-text-tertiary);
+        font-weight: 700;
+    }
+
+    .training-table tbody tr:hover {
+        background: rgba(16, 185, 129, 0.06);
+    }
+
+    .exercise-order {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        background: rgba(16, 185, 129, 0.18);
+        color: var(--color-primary-300);
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+    .exercise-name {
+        color: var(--color-text-primary);
+        font-weight: 600;
+    }
+
+    @@media (max-width: 768px) {
+        .training-detail-title {
+            font-size: 26px;
+        }
+
+        .training-hero-card,
+        .training-section-card {
+            padding: 16px;
+        }
+
+        .training-back-link {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="training-detail-page">
+    <header class="training-detail-header">
+        <div>
+            <h1 class="training-detail-title">Detalji treninga</h1>
+            <p class="training-detail-subtitle">Pregled izvedbe treninga, metrika i svih vježbi po redoslijedu.</p>
+        </div>
+        <a asp-action="Index" class="training-back-link">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+            Natrag na treninge
+        </a>
+    </header>
+
+    <section class="training-hero-card" aria-label="Osnovne informacije treninga">
+        <div class="training-hero-top">
+            <span class="@vrstaClass">@vrstaNaziv</span>
+            <span class="training-date">@Model.DatumVrijeme.ToString("dd.MM.yyyy. HH:mm")</span>
+        </div>
+
+        <h2 class="training-user-name">@korisnikNaziv</h2>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Biljeske))
+        {
+            <p class="training-note">@Model.Biljeske</p>
+        }
+        else
+        {
+            <p class="training-note-empty">Nema unesenih bilješki za ovaj trening.</p>
+        }
+    </section>
+
+    <section class="training-section-card" aria-label="Ključne metrike treninga">
+        <h2 class="training-section-title">Ključne metrike</h2>
+        <div class="training-metrics-grid">
+            <article class="training-metric-box">
+                <span class="training-metric-label">Trajanje</span>
+                <strong class="training-metric-value">@Model.TrajanjeMinuta</strong>
+                <span class="training-metric-unit">minuta</span>
+            </article>
+
+            <article class="training-metric-box">
+                <span class="training-metric-label">Kalorije</span>
+                <strong class="training-metric-value">@(Model.PotroseneKalorije?.ToString() ?? "-")</strong>
+                <span class="training-metric-unit">kcal</span>
+            </article>
+
+            <article class="training-metric-box">
+                <span class="training-metric-label">Ocjena</span>
+                <strong class="training-metric-value">@(Model.Ocjena?.ToString() ?? "-")</strong>
+                <span class="training-metric-unit">od 10</span>
+            </article>
+
+            <article class="training-metric-box">
+                <span class="training-metric-label">Vježbe</span>
+                <strong class="training-metric-value">@Model.TreningVjezbe.Count</strong>
+                <span class="training-metric-unit">ukupno</span>
+            </article>
+
+            <article class="training-metric-box">
+                <span class="training-metric-label">Ukupno serija</span>
+                <strong class="training-metric-value">@ukupnoSerija</strong>
+                <span class="training-metric-unit">serija</span>
+            </article>
+
+            <article class="training-metric-box">
+                <span class="training-metric-label">Ukupno ponavljanja</span>
+                <strong class="training-metric-value">@ukupnoPonavljanja</strong>
+                <span class="training-metric-unit">ponavljanja</span>
+            </article>
+        </div>
+    </section>
+
+    <section class="training-section-card" aria-label="Vježbe u treningu">
+        <h2 class="training-section-title">Vježbe u treningu</h2>
+
+        @if (Model.TreningVjezbe.Any())
+        {
+            <div class="training-table-wrap">
+                <table class="training-table">
+                    <thead>
+                        <tr>
+                            <th>Redni broj</th>
+                            <th>Vježba</th>
+                            <th>Serije</th>
+                            <th>Ponavljanja</th>
+                            <th>Težina</th>
+                            <th>Odmor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tv in Model.TreningVjezbe.OrderBy(t => t.Redoslijed))
+                        {
+                            <tr>
+                                <td><span class="exercise-order">@tv.Redoslijed</span></td>
+                                <td class="exercise-name">@(tv.Vjezba?.Naziv ?? "-")</td>
+                                <td>@tv.BrojSerija</td>
+                                <td>@tv.BrojPonavljanja</td>
+                                <td>@(tv.TezinaKg?.ToString("0.#") is null ? "-" : $"{tv.TezinaKg:0.#} kg")</td>
+                                <td>@tv.OdmorSekundi s</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="training-note-empty">Za ovaj trening još nisu dodane vježbe.</p>
+        }
+    </section>
+</div>

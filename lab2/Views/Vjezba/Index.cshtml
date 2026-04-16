@@ -1,0 +1,98 @@
+@model List<Vjezba>
+
+@{
+    ViewData["Title"] = "Vježbe";
+}
+
+<!-- HEADER -->
+<div class="exercise-header">
+    <div>
+        <h1>Vježbe</h1>
+        <p class="exercise-count">
+            @if (Model.Count == 0)
+            {
+                <span>Nema dostupnih vježbi</span>
+            }
+            else
+            {
+                <span>Ukupno @Model.Count vježbi</span>
+            }
+        </p>
+    </div>
+</div>
+
+<!-- EXERCISE GRID -->
+@if (Model.Count > 0)
+{
+    <div class="exercise-grid">
+        @foreach (var exercise in Model)
+        {
+            var difficultyClass = $"level-{exercise.RazinaTezine}";
+            var muscleGroupDisplay = exercise.MisicnaSkupina.ToString();
+            var difficultyText = exercise.RazinaTezine switch
+            {
+                1 => "Početnik",
+                2 => "Početni",
+                3 => "Srednji",
+                4 => "Napredan",
+                5 => "Profesionalno",
+                _ => "Nepoznato"
+            };
+
+            <article class="exercise-card">
+                <!-- TITLE -->
+                <h3>@exercise.Naziv</h3>
+
+                <!-- DESCRIPTION -->
+                <div class="exercise-description @(string.IsNullOrWhiteSpace(exercise.Opis) ? "empty" : "")">
+                    @(string.IsNullOrWhiteSpace(exercise.Opis) ? "Nema dostupnog opisa" : exercise.Opis)
+                </div>
+
+                <!-- META: Muscle Group, Difficulty, Equipment -->
+                <div class="exercise-meta">
+                    <div class="exercise-meta-item">
+                        <div class="exercise-meta-label">Mišićna Skupina</div>
+                        <div class="muscle-group">@muscleGroupDisplay</div>
+                    </div>
+                    <div class="exercise-meta-item">
+                        <div class="exercise-meta-label">Težina</div>
+                        <div class="exercise-meta-value">
+                            <span class="difficulty-badge @difficultyClass">@exercise.RazinaTezine</span>
+                            <span>@difficultyText</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EQUIPMENT -->
+                <div class="equipment-indicator @(exercise.PotrebnaOprema ? "yes" : "no")">
+                    <i class="fas fa-@(exercise.PotrebnaOprema ? "check-circle" : "times-circle")"></i>
+                    <span>@(exercise.PotrebnaOprema ? "Potrebna oprema" : "Bez opreme")</span>
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="exercise-footer">
+                    <a asp-action="Details" asp-route-id="@exercise.Id" class="exercise-button">
+                        <i class="fas fa-arrow-right exercise-button-icon"></i>
+                        Detalji
+                    </a>
+                    @if (!string.IsNullOrWhiteSpace(exercise.VideoUrl))
+                    {
+                        <a href="@exercise.VideoUrl" target="_blank" rel="noopener noreferrer" class="exercise-button" style="background-color: rgba(37, 99, 235, 0.15); color: #3b82f6; border-color: #3b82f6;">
+                            <i class="fas fa-play exercise-button-icon"></i>
+                            Video
+                        </a>
+                    }
+                </div>
+            </article>
+        }
+    </div>
+}
+else
+{
+    <!-- EMPTY STATE -->
+    <div class="empty-state">
+        <div class="empty-state-icon">🏋️</div>
+        <h2>Nema vježbi</h2>
+        <p>Počnite dodavanjem prve vježbe do kataloga.</p>
+    </div>
+}
